@@ -9,23 +9,72 @@ import EntityDetailPage from "./pages/EntityDetailPage";
 import StatisticsPage from "./pages/StatisticsPage";
 import NotFound from "./pages/NotFound";
 
+// Admin imports
+import { AdminAuthProvider } from "./hooks/useAdminAuth";
+import { ProtectedAdminRoute } from "./components/admin/ProtectedAdminRoute";
+import AdminLoginPage from "./pages/admin/AdminLoginPage";
+import AdminLayout from "./pages/admin/AdminLayout";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import UsersManagementPage from "./pages/admin/UsersManagementPage";
+import ContentManagementPage from "./pages/admin/ContentManagementPage";
+import ReportsPage from "./pages/admin/ReportsPage";
+import SiteSettingsPage from "./pages/admin/SiteSettingsPage";
+
+// User imports
+import { UserAuthProvider } from "./hooks/useUserAuth";
+import { ProtectedUserRoute } from "./components/user/ProtectedUserRoute";
+import UserLoginPage from "./pages/user/UserLoginPage";
+import UserRegisterPage from "./pages/user/UserRegisterPage";
+import UserDashboard from "./pages/user/UserDashboard";
+
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/entities" element={<EntitiesPage />} />
-          <Route path="/entities/:id" element={<EntityDetailPage />} />
-          <Route path="/statistics" element={<StatisticsPage />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
+    <AdminAuthProvider>
+      <UserAuthProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              {/* Public routes */}
+              <Route path="/" element={<Index />} />
+              <Route path="/entities" element={<EntitiesPage />} />
+              <Route path="/entities/:id" element={<EntityDetailPage />} />
+              <Route path="/statistics" element={<StatisticsPage />} />
+
+              {/* User auth routes */}
+              <Route path="/login" element={<UserLoginPage />} />
+              <Route path="/register" element={<UserRegisterPage />} />
+
+              {/* User dashboard (protected) */}
+              <Route path="/dashboard" element={
+                <ProtectedUserRoute>
+                  <UserDashboard />
+                </ProtectedUserRoute>
+              } />
+
+              {/* Admin routes */}
+              <Route path="/admin/login" element={<AdminLoginPage />} />
+              <Route path="/admin" element={
+                <ProtectedAdminRoute>
+                  <AdminLayout />
+                </ProtectedAdminRoute>
+              }>
+                <Route index element={<AdminDashboard />} />
+                <Route path="users" element={<UsersManagementPage />} />
+                <Route path="content" element={<ContentManagementPage />} />
+                <Route path="reports" element={<ReportsPage />} />
+                <Route path="settings" element={<SiteSettingsPage />} />
+              </Route>
+
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </UserAuthProvider>
+    </AdminAuthProvider>
   </QueryClientProvider>
 );
 

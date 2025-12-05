@@ -1,7 +1,9 @@
 import { useState, useMemo } from 'react';
 import { Navbar } from '@/components/layout/Navbar';
 import { StateCard } from '@/components/entity/StateCard';
-import { mockEntities, stateLabels } from '@/data/mockData';
+import { CreateEntityDialog } from '@/components/entity/CreateEntityDialog';
+import { stateLabels } from '@/data/mockData';
+import { useEntityStore } from '@/hooks/useEntityStore';
 import { EntityState } from '@/types/entity';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -13,25 +15,29 @@ const allStates: (EntityState | 'all')[] = ['all', 'draft', 'submitted', 'valida
 export default function EntitiesPage() {
   const [search, setSearch] = useState('');
   const [stateFilter, setStateFilter] = useState<EntityState | 'all'>('all');
+  const { entities, addEntity } = useEntityStore();
 
   const filteredEntities = useMemo(() => {
-    return mockEntities.filter(entity => {
+    return entities.filter(entity => {
       const matchesSearch = entity.name.toLowerCase().includes(search.toLowerCase()) ||
-                           entity.type.toLowerCase().includes(search.toLowerCase());
+        entity.type.toLowerCase().includes(search.toLowerCase());
       const matchesState = stateFilter === 'all' || entity.currentState === stateFilter;
       return matchesSearch && matchesState;
     });
-  }, [search, stateFilter]);
+  }, [entities, search, stateFilter]);
 
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
       <main className="container py-8 space-y-6">
-        <div className="space-y-2">
-          <h1 className="text-3xl font-bold text-foreground">Entités</h1>
-          <p className="text-muted-foreground">
-            Explorez et gérez toutes vos entités
-          </p>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="space-y-2">
+            <h1 className="text-3xl font-bold text-foreground">Entités</h1>
+            <p className="text-muted-foreground">
+              Explorez et gérez toutes vos entités
+            </p>
+          </div>
+          <CreateEntityDialog onCreateEntity={addEntity} />
         </div>
 
         <div className="flex flex-col sm:flex-row gap-4">

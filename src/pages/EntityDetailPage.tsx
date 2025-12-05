@@ -1,19 +1,35 @@
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Navbar } from '@/components/layout/Navbar';
 import { EntityTimeline } from '@/components/entity/EntityTimeline';
 import { VersionHistory } from '@/components/entity/VersionHistory';
 import { StateBadge } from '@/components/entity/StateBadge';
-import { mockEntities } from '@/data/mockData';
+import { useEntityStore } from '@/hooks/useEntityStore';
+import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Clock, User, FileText, Calendar } from 'lucide-react';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import { EntityState } from '@/types/entity';
 
 export default function EntityDetailPage() {
   const { id } = useParams<{ id: string }>();
-  const entity = mockEntities.find(e => e.id === id);
+  const navigate = useNavigate();
+  const { entities, updateEntityState } = useEntityStore();
+  const { toast } = useToast();
+  const entity = entities.find(e => e.id === id);
+
+  const handleStateChange = (newState: EntityState, actionName: string) => {
+    if (!entity) return;
+    updateEntityState(entity.id, newState, 'Utilisateur');
+    toast({
+      title: 'Action effectuée',
+      description: `L'entité a été ${actionName}.`,
+    });
+    // Force refresh by navigating
+    navigate(`/entities/${entity.id}`, { replace: true });
+  };
 
   if (!entity) {
     return (
@@ -122,27 +138,45 @@ export default function EntityDetailPage() {
               </CardHeader>
               <CardContent className="space-y-2">
                 {entity.currentState === 'draft' && (
-                  <Button className="w-full" variant="default">
+                  <Button
+                    className="w-full"
+                    variant="default"
+                    onClick={() => handleStateChange('submitted', 'soumise pour validation')}
+                  >
                     Soumettre pour validation
                   </Button>
                 )}
                 {entity.currentState === 'submitted' && (
                   <>
-                    <Button className="w-full state-badge-validated">
+                    <Button
+                      className="w-full state-badge-validated"
+                      onClick={() => handleStateChange('validated', 'validée')}
+                    >
                       Valider
                     </Button>
-                    <Button className="w-full" variant="destructive">
+                    <Button
+                      className="w-full"
+                      variant="destructive"
+                      onClick={() => handleStateChange('rejected', 'rejetée')}
+                    >
                       Rejeter
                     </Button>
                   </>
                 )}
                 {entity.currentState === 'validated' && (
-                  <Button className="w-full state-badge-archived">
+                  <Button
+                    className="w-full state-badge-archived"
+                    onClick={() => handleStateChange('archived', 'archivée')}
+                  >
                     Archiver
                   </Button>
                 )}
                 {entity.currentState === 'rejected' && (
-                  <Button className="w-full" variant="outline">
+                  <Button
+                    className="w-full"
+                    variant="outline"
+                    onClick={() => handleStateChange('draft', 'remise en brouillon pour révision')}
+                  >
                     Réviser et resoumettre
                   </Button>
                 )}
