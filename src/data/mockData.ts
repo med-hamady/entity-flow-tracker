@@ -61,7 +61,7 @@ export const mockEntities: Entity[] = Array.from({ length: 12 }, (_, i) => {
   
   return {
     id: `entity-${i + 1}`,
-    name: `${types[i % types.length]} #${1000 + i}`,
+    name: `${types[i % types.length]} ${1000 + i}`,
     type: types[i % types.length],
     currentState,
     createdAt,

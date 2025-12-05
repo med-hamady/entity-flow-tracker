@@ -27,40 +27,42 @@ export default function EntitiesPage() {
   }, [entities, search, stateFilter]);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
       <Navbar />
-      <main className="container py-8 space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div className="space-y-2">
-            <h1 className="text-3xl font-bold text-foreground">Entités</h1>
-            <p className="text-muted-foreground">
+      <main className="container py-10 space-y-8">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 animate-fade-in">
+          <div className="space-y-3">
+            <h1 className="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+              Entités
+            </h1>
+            <p className="text-lg text-muted-foreground">
               Explorez et gérez toutes vos entités
             </p>
           </div>
           <CreateEntityDialog onCreateEntity={addEntity} />
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-4">
+        <div className="flex flex-col sm:flex-row gap-4 animate-fade-in" style={{ animationDelay: '100ms' }}>
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             <Input
               placeholder="Rechercher une entité..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-10"
+              className="pl-11 h-12 text-base border-2 focus:ring-2 focus:ring-primary/20"
             />
           </div>
           <div className="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0">
-            <Filter className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+            <Filter className="h-5 w-5 text-muted-foreground flex-shrink-0" />
             {allStates.map((state) => (
               <Button
                 key={state}
                 variant={stateFilter === state ? 'default' : 'outline'}
-                size="sm"
+                size="lg"
                 onClick={() => setStateFilter(state)}
                 className={cn(
-                  'whitespace-nowrap',
-                  stateFilter === state && 'shadow-md'
+                  'whitespace-nowrap font-semibold border-2 transition-all',
+                  stateFilter === state && 'shadow-lg scale-105'
                 )}
               >
                 {state === 'all' ? 'Tous' : stateLabels[state]}
@@ -69,15 +71,17 @@ export default function EntitiesPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {filteredEntities.map((entity) => (
-            <StateCard key={entity.id} entity={entity} />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredEntities.map((entity, index) => (
+            <div key={entity.id} className="animate-fade-in" style={{ animationDelay: `${index * 50}ms` }}>
+              <StateCard entity={entity} />
+            </div>
           ))}
         </div>
 
         {filteredEntities.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground">Aucune entité trouvée</p>
+          <div className="text-center py-16 animate-fade-in">
+            <p className="text-xl text-muted-foreground font-medium">Aucune entité trouvée</p>
           </div>
         )}
       </main>
