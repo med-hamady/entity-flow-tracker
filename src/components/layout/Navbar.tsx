@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import { LayoutDashboard, List, BarChart3, LogIn, UserPlus } from 'lucide-react';
+import { LayoutDashboard, List, BarChart3, LogIn, UserPlus, Github, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const navItems = [
@@ -48,6 +48,28 @@ export function Navbar() {
         </div>
 
         <div className="flex items-center gap-2">
+          <a
+            href="https://github.com/med-hamady/entity-flow-tracker"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden sm:block"
+          >
+            <Button variant="ghost" size="sm" className="gap-2">
+              <Github className="h-4 w-4" />
+              <span className="hidden lg:inline">GitHub</span>
+            </Button>
+          </a>
+          <a
+            href="https://www.nuitdelinfo.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden sm:block"
+          >
+            <Button variant="ghost" size="sm" className="gap-2 text-purple-600 hover:text-purple-700 hover:bg-purple-50">
+              <Sparkles className="h-4 w-4" />
+              <span className="hidden lg:inline">Nuit de l'Info</span>
+            </Button>
+          </a>
           <Link to="/login">
             <Button variant="ghost" size="sm" className="gap-2">
               <LogIn className="h-4 w-4" />
