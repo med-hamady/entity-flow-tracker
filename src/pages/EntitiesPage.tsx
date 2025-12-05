@@ -29,39 +29,39 @@ export default function EntitiesPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
       <Navbar />
-      <main className="container py-10 space-y-8">
+      <main className="container px-4 md:px-6 lg:px-8 py-6 md:py-10 space-y-6 md:space-y-8">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 animate-fade-in">
-          <div className="space-y-3">
-            <h1 className="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+          <div className="space-y-2 md:space-y-3">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
               Entités
             </h1>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-base md:text-lg text-muted-foreground">
               Explorez et gérez toutes vos entités
             </p>
           </div>
           <CreateEntityDialog onCreateEntity={addEntity} />
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-4 animate-fade-in" style={{ animationDelay: '100ms' }}>
+        <div className="flex flex-col sm:flex-row gap-3 md:gap-4 animate-fade-in" style={{ animationDelay: '100ms' }}>
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 md:h-5 w-4 md:w-5 text-muted-foreground" />
             <Input
               placeholder="Rechercher une entité..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-11 h-12 text-base border-2 focus:ring-2 focus:ring-primary/20"
+              className="pl-10 md:pl-11 h-10 md:h-12 text-sm md:text-base border-2 focus:ring-2 focus:ring-primary/20"
             />
           </div>
-          <div className="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0">
-            <Filter className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+          <div className="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0 scrollbar-hide">
+            <Filter className="h-4 md:h-5 w-4 md:w-5 text-muted-foreground flex-shrink-0" />
             {allStates.map((state) => (
               <Button
                 key={state}
                 variant={stateFilter === state ? 'default' : 'outline'}
-                size="lg"
+                size="sm"
                 onClick={() => setStateFilter(state)}
                 className={cn(
-                  'whitespace-nowrap font-semibold border-2 transition-all',
+                  'whitespace-nowrap font-semibold border-2 transition-all text-xs md:text-sm h-10 md:h-11',
                   stateFilter === state && 'shadow-lg scale-105'
                 )}
               >
@@ -71,17 +71,17 @@ export default function EntitiesPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {filteredEntities.map((entity, index) => (
-            <div key={entity.id} className="animate-fade-in" style={{ animationDelay: `${index * 50}ms` }}>
+            <div key={entity.id} className="animate-fade-in" style={{ animationDelay: `${Math.min(index * 50, 500)}ms` }}>
               <StateCard entity={entity} />
             </div>
           ))}
         </div>
 
         {filteredEntities.length === 0 && (
-          <div className="text-center py-16 animate-fade-in">
-            <p className="text-xl text-muted-foreground font-medium">Aucune entité trouvée</p>
+          <div className="text-center py-12 md:py-16 animate-fade-in">
+            <p className="text-lg md:text-xl text-muted-foreground font-medium">Aucune entité trouvée</p>
           </div>
         )}
       </main>
